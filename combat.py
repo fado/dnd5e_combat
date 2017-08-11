@@ -50,17 +50,11 @@ def get_random_monster():
     monster = monsters[randint(0, len(monsters) - MONSTER_OFFSET)]
     log.info("".join(["Random monster selected: ", monster['name']]))
 
-    try:
-        actions = monster['actions']
-    except KeyError:
-        actions = None
-        log.warn("Monster has no actions.")
-
     return Monster(
         monster['name'],
         monster['armor_class'],
         monster['hit_dice'],
-        actions,
+        monster.get('actions'),
         monster['constitution']
     )
 
