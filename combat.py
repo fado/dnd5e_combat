@@ -32,12 +32,13 @@ class Monster(object):
     def _calculate_hit_points(self):
         """ Calculate the monster's hitpoints. """
 
-        # Get the number of hit dice
-        number_of_hit_dice = int(self.hit_dice.split('d')[0])
-        # Get the total bonus HP to add
-        bonus = number_of_hit_dice * get_bonus(self.constitution)
-        # Return the total
-        return int(roll_dice(self.hit_dice) + bonus)
+        result = roll_dice(self.hit_dice)
+
+        # Make sure the HP is at least 1.
+        if result > 1:
+            return result
+        elif result <= 1:
+            return 1
 
 
 def get_random_monster():
@@ -49,11 +50,17 @@ def get_random_monster():
     monster = monsters[randint(0, len(monsters) - MONSTER_OFFSET)]
     log.info("".join(["Random monster selected: ", monster['name']]))
 
+    try:
+        actions = monster['actions']
+    except KeyError:
+        actions = None
+        log.warn("Monster has no actions.")
+
     return Monster(
         monster['name'],
         monster['armor_class'],
         monster['hit_dice'],
-        monster['actions'],
+        actions,
         monster['constitution']
     )
 
@@ -72,13 +79,11 @@ def roll_dice(dice):
 
     return total
 
-
 def get_bonus(ability_score):
     """
     Can calculate bonus for any ability score by dividing by two and rounding down.
     """
     return floor((ability_score - 10) / 2)
-
 
 if __name__ == '__main__':
     # Setup the logging
