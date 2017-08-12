@@ -25,6 +25,7 @@ class Monster(object):
         self.name = name
         self.armour_class = armor_class
         self.hit_dice = hit_dice
+        self.number_of_hit_dice = hit_dice.split(',')[0]
         self.actions = actions
         self.constitution = constitution
         self.hit_points = self._calculate_hit_points()
@@ -32,7 +33,7 @@ class Monster(object):
     def _calculate_hit_points(self):
         """ Calculate the monster's hitpoints. """
 
-        result = roll_dice(self.hit_dice)
+        result = roll_dice(self.hit_dice) + (get_bonus(self.constitution) * self.number_of_hit_dice)
 
         # Make sure the HP is at least 1.
         if result > 1:
