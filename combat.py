@@ -15,4 +15,5 @@ if __name__ == '__main__':
     log.info('Starting combat...')
 
     monster = get_random_monster()
-    log.info(monster.attacks)
+    for attack in monster.attacks:
+        log.info(attack)

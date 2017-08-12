@@ -42,7 +42,7 @@ class Monster(object):
 
 
 def get_random_monster():
-    monsters = get_all_monsters()
+    monsters = get_all_monsters_json()
 
     monster = monsters[randint(0, len(monsters) - MONSTER_OFFSET)]
     log.info("".join(["Random monster selected: ", monster['name']]))
@@ -56,7 +56,7 @@ def get_random_monster():
     )
 
 
-def get_all_monsters():
+def get_all_monsters_json():
     with open(MONSTER_FILE) as monster_file:
         monsters = json.load(monster_file)
     return monsters
