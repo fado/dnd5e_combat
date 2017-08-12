@@ -40,6 +40,11 @@ class Monster(object):
         elif result <= 1:
             return 1
 
+    def get_attacks(self):
+        for action in self.actions:
+            if 'damage_dice' in action:
+                print(action['damage_dice'])
+
 
 def get_random_monster():
     """ Returns a random monster from the list. """
@@ -73,6 +78,7 @@ def roll_dice(dice):
 
     return total
 
+
 def get_bonus(ability_score):
     """
     Can calculate bonus for any ability score by dividing by two and rounding down.
@@ -90,4 +96,4 @@ if __name__ == '__main__':
     log.info('Starting combat...')
 
     monster = get_random_monster()
-    log.info(monster.hit_points)
+    monster.get_attacks()
