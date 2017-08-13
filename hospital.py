@@ -31,9 +31,15 @@ class Monster:
     def _get_attacks(self):
         attacks = []
 
+        # Only interested in actions that have damage dice
         for action in self.actions:
             if 'damage_dice' in action:
                 attacks.append(action)
+
+        # If the attack has no damage_bonus, add it as zero to avoid key errors later
+        for attack in attacks:
+            if not 'damage_bonus' in attack:
+                attack['damage_bonus'] = 0
 
         return attacks
 
