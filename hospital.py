@@ -11,13 +11,6 @@ MONSTER_OFFSET = 2  # Subtract this from len(monsters) to get upper bound of ran
 
 
 class Monster:
-    name = ""
-    armour_class = 0
-    hit_dice = ""
-    hit_points = 0
-    actions = []
-    attacks = []
-
     def __init__(self, name, armor_class, hit_dice, constitution, actions):
         self.name = name
         self.armour_class = armor_class
@@ -28,7 +21,7 @@ class Monster:
         self.hit_points = self._calculate_hit_points()
         # Figure out actions and attacks
         self.actions = actions
-        self._get_attacks()
+        self.attacks = self._get_attacks()
 
     def _calculate_hit_points(self):
         result = roll_dice(self.hit_dice) + (get_bonus(self.constitution) * self.number_of_hit_dice)
@@ -36,53 +29,13 @@ class Monster:
         return result if result > 1 else 1
 
     def _get_attacks(self):
+        attacks = []
+
         for action in self.actions:
             if 'damage_dice' in action:
-                self.attacks.append(action)
+                attacks.append(action)
 
-    def roll_attack(self, target):
-        # Choose one of our attacks at random
-        attack = self.attacks[randint(0, len(self.attacks) - 1)]
-        log.info("Making attack: " + attack['name'])
-
-        # Make attack roll
-        natural_attack_roll = roll_dice("1d20")
-
-        # Check for natural 1
-        if natural_attack_roll == 1:
-            log.info("{} rolled a natural 1!".format(self.name))
-
-        # Check for natural 20
-        elif natural_attack_roll == 20:
-            log.info("{} rolled a critical hit!".format(self.name))
-            self._roll_damage(attack, target, critical=True)
-        else:
-            attack_roll = natural_attack_roll + attack['attack_bonus']
-            log.info("{} rolled {} against {}'s AC {}".format(
-                self.name,
-                attack_roll,
-                target.name,
-                target.armour_class
-            ))
-            if attack_roll >= target.armour_class:
-                log.info("Attack hit!")
-                self._roll_damage(attack, target)
-            else:
-                log.info("Attack missed!")
-
-    def _roll_damage(self, attack, target, critical=False):
-        if critical:
-            log.info("Rolling critical damage.")
-            damage = (2 * roll_dice(attack["damage_dice"])) + attack["damage_bonus"]
-        else:
-            log.info("Rolling normal damage.")
-            damage = roll_dice(attack["damage_dice"]) + attack["damage_bonus"]
-
-        log.info("Dealing {} damage to {}, reducing their hit points from {} to {}.".format(
-            damage, target.name, target.hit_points, target.hit_points - damage
-        ))
-
-        target.hit_points -= damage
+        return attacks
 
 
 def get_random_monster():
@@ -96,7 +49,7 @@ def get_random_monster():
         monster['armor_class'],
         monster['hit_dice'],
         monster['constitution'],
-        monster.get('actions')
+        monster.get('actions') # Returns None if not found.
     )
 
 
