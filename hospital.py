@@ -11,7 +11,7 @@ MONSTER_OFFSET = 2  # Subtract this from len(monsters) to get upper bound of ran
 
 
 class Monster:
-    def __init__(self, name, armor_class, hit_dice, constitution, actions):
+    def __init__(self, name, armor_class, hit_dice, constitution, attacks):
         self.name = name
         self.armour_class = armor_class
         # Figure out hit points
@@ -20,28 +20,12 @@ class Monster:
         self.constitution = constitution
         self.hit_points = self._calculate_hit_points()
         # Figure out actions and attacks
-        self.actions = actions
-        self.attacks = self._get_attacks()
+        self.attacks = attacks
 
     def _calculate_hit_points(self):
         result = roll_dice(self.hit_dice) + (get_bonus(self.constitution) * self.number_of_hit_dice)
         # Make sure the HP is at least 1
         return result if result > 1 else 1
-
-    def _get_attacks(self):
-        attacks = []
-
-        # Only interested in actions that have damage dice
-        for action in self.actions:
-            if 'damage_dice' in action:
-                attacks.append(action)
-
-        # If the attack has no damage_bonus, add it as zero to avoid key errors later
-        for attack in attacks:
-            if not 'damage_bonus' in attack:
-                attack['damage_bonus'] = 0
-
-        return attacks
 
 
 def get_random_monster():
@@ -50,12 +34,25 @@ def get_random_monster():
     monster = monsters[randint(0, len(monsters) - MONSTER_OFFSET)]
     log.info("".join(["Random monster selected: ", monster['name']]))
 
+    if 'actions' in monster:
+        log.info("{} has no actions! Exiting.".format(monster['name']))
+
+    attacks = []
+
+    for action in monster['actions']:
+        if 'damage_dice' in action:
+            attacks.append(action)
+
+    for attack in attacks:
+        if not 'damage_bonus' in attack:
+            attack["damage_bonus"] = 0
+
     return Monster(
         monster['name'],
         monster['armor_class'],
         monster['hit_dice'],
         monster['constitution'],
-        monster.get('actions') # Returns None if not found.
+        attacks
     )
 
 
