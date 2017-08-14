@@ -1,13 +1,12 @@
 import json
 import logging
-from random import randint
+from random import randint, choice
 
 from utils import roll_dice, get_bonus
 
 log = logging.getLogger(__name__)
 
 MONSTER_FILE = 'monsters.json'
-MONSTER_OFFSET = 2  # Subtract this from len(monsters) to get upper bound of random integers generated
 
 
 class Monster:
@@ -31,7 +30,7 @@ class Monster:
 def get_random_monster():
     monsters = get_all_monsters_json()
 
-    monster = monsters[randint(0, len(monsters) - MONSTER_OFFSET)]
+    monster = choice(monsters)
     log.info("".join(["Random monster selected: ", monster['name']]))
 
     if 'actions' in monster:

@@ -1,5 +1,6 @@
 import logging
-from random import randint
+from random import randint, choice
+
 from time import sleep
 
 from hospital import get_random_monster
@@ -66,13 +67,11 @@ if __name__ == '__main__':
 
     try:
         while monster_b.hit_points > 0:
-            if len(monster_a.attacks) == 1:
-                attack = monster_a.attacks[0]
-            elif len(monster_a.attacks) > 1:
-                attack = monster_a.attacks[randint(0, len(monster_a.attacks) - 1)]
-            elif len(monster_a.attacks) <= 0:
+            if len(monster_a.attacks) <= 0:
                 log.warn("{} has no attacks!  Exiting.".format(monster_a.name))
                 exit(0)
+            else:
+                attack = choice(monster_a.attacks)
             roll_attack(monster_a, attack, monster_b)
             #sleep(2)
     except KeyboardInterrupt:
