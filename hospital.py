@@ -33,14 +33,19 @@ def get_random_monster():
     monster = choice(monsters)
     log.info("".join(["Random monster selected: ", monster['name']]))
 
-    if 'actions' in monster:
+    if not 'actions' in monster:
         log.info("{} has no actions! Exiting.".format(monster['name']))
+        exit(0)
 
     attacks = []
 
     for action in monster['actions']:
         if 'damage_dice' in action:
             attacks.append(action)
+
+    if not attacks:
+        log.info("{} has no attacks! Exiting.".format(monster['name']))
+        exit(0)
 
     for attack in attacks:
         if not 'damage_bonus' in attack:
